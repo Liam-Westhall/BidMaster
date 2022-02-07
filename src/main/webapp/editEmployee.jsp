@@ -21,6 +21,61 @@
 	<link href="webjars/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" />	
 	<script src="webjars/jquery/3.3.1-1/jquery.min.js"></script>
 	<script src="webjars/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+	
+	<style>
+	h1 {
+		margin: 1em 0 0.5em 0;
+	font-weight: 600;
+	font-family: 'Titillium Web', sans-serif;
+	position: relative;  
+	font-size: 36px;
+	line-height: 40px;
+	padding: 15px 15px 15px 15%;
+	color: #355681;
+	box-shadow: 
+		inset 0 0 0 1px rgba(53,86,129, 0.4), 
+		inset 0 0 5px rgba(53,86,129, 0.5),
+		inset -285px 0 35px white;
+	border-radius: 0 10px 0 10px;
+	text-align: center;
+	left: -45px
+	}
+	
+		
+	input[type = "submit"]{
+	background: rgb(105,105,105);
+	border: 1px solid black;
+	}
+	
+	button[type = "submit"]{
+	background: rgb(105,105,105);
+	border: 1px solid black;
+	}
+	
+	
+	
+	div.form-group{
+	margin: 1em 0 0.5em 0;
+	font-weight: normal;
+	position: relative;
+	text-shadow: 0 -1px rgba(0,0,0,0.6);
+	font-size: 28px;
+	line-height: 40px;
+	background: #355681;
+	background: rgba(53,86,129, 0.8);
+	border: 1px solid #fff;
+	padding: 5px 15px;
+	color: white;
+	border-radius: 0 10px 0 10px;
+	box-shadow: inset 0 0 5px rgba(53,86,129, 0.5);
+	font-family: 'Muli', sans-serif;
+	
+	}
+	
+	</style>
+	
+	
+	
 </head>
 <body>
 	<div class="container">
@@ -65,7 +120,7 @@
 	  </div>
    	  <div class="form-group">
 	    <label for="employeeSSN">SSN (Employee ID)</label>
-	    <input type="text" class="form-control" id="employeeSSN" name="employeeSSN" placeholder="XXX-XX-XXXX" value=${editEmployee.employeeID} readonly>
+	    <input type="text" class="form-control" id="employeeSSN" name="employeeSSN" placeholder="reenter ssn of employee you selected" value=${editEmployee.employeeID} >
 	  </div>
    	  <div class="form-group">
 	    <label for="employeeStartDate">Start Date</label>

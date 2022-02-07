@@ -1,6 +1,7 @@
 package dao;
 
 import java.sql.Connection;
+
 import java.sql.DriverManager;
 import java.sql.Statement;
 
@@ -30,16 +31,17 @@ public class LoginDao {
 		Login login = new Login();   
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st = con.createStatement();
-			String loginQuery = "SELECT * FROM login WHERE username = " + username + " AND password = " + password;
+			String loginQuery = "SELECT * FROM login WHERE username = '" + username + "' AND password = '" + password + "'";
 			ResultSet rs = st.executeQuery(loginQuery);
+			rs.beforeFirst();
+			rs.next();
+			login.setRole(rs.getString("role"));
 			login.setUsername(username);
 			login.setPassword(password);
-			login.setRole(rs.getString("role"));
 			
 		}
-		
 		catch(Exception e) {
 			System.out.println(e);
 		}
@@ -62,11 +64,10 @@ public class LoginDao {
 		String queryResult = "";
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st = con.createStatement();
-			String addUserQuery = "INSERT INTO login (username, password, customer) VALUES ( " + login.getUsername() + ", " + login.getPassword() + ", " + login.getRole() + ")" ;
+			String addUserQuery = "INSERT INTO login (username, password, customer) VALUES ( '" + login.getUsername() + "', '" + login.getPassword() + "', '" + login.getRole() + "')" ;
 			int added = st.executeUpdate(addUserQuery);
-			
 			if(added == 0) {
 				queryResult = "failure";
 			}

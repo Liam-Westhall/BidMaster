@@ -9,44 +9,63 @@ import model.Customer;
 import java.sql.*;
 public class BidDao {
 
-	public List<Bid> getBidHistory(String auctionID) {
-		
-		List<Bid> bids = new ArrayList<Bid>();
+	// COMPLETE
+		public List<Bid> getBidHistory(String auctionID) {
+			
+			List<Bid> bids = new ArrayList<Bid>();
 
-		/*
-		 * The students code to fetch data from the database
-		 * Each record is required to be encapsulated as a "Bid" class object and added to the "bids" ArrayList
-		 * auctionID, which is the Auction's ID, is given as method parameter
-		 * Query to get the bid history of an auction, indicated by auctionID, must be implemented
-		 */
+			/*
+			 * The students code to fetch data from the database
+			 * Each record is required to be encapsulated as a "Bid" class object and added to the "bids" ArrayList
+			 * auctionID, which is the Auction's ID, is given as method parameter
+			 * Query to get the bid history of an auction, indicated by auctionID, must be implemented
+			 */
 
-		/*Sample data begins*/
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
-			Statement st = con.createStatement();
-			String bidhistoryQuery = ("SELECT * FROM bids WHERE auctionid = " + auctionID);
-			ResultSet rs = st.executeQuery(bidhistoryQuery);
-			while(rs.next()) {
-				Bid bid = new Bid();
-				bid.setCustomerID(rs.getString("customerid"));
-				bid.setAuctionID(rs.getInt("auctionid"));
-				bid.setBidPrice(rs.getFloat("bidprice"));
-				bid.setMaxBid(rs.getFloat("maximumbid"));
-				bid.setBidTime(rs.getString("bidtime"));
-				bids.add(bid);
+			/*Sample data begins*/
+//			for (int i = 0; i < 10; i++) {
+//				Bid bid = new Bid();
+//				bid.setAuctionID(123);
+//				bid.setCustomerID("123-12-1234");
+//				bid.setBidTime("2008-12-11");
+//				bid.setBidPrice(100);
+//				bids.add(bid);			
+//			}
+			
+			// CONVERT auctionID STRING -> INT
+			int auctionIDInt;
+			try {
+				auctionIDInt = Integer.parseInt(auctionID);
+			} catch(Exception e) {
+				auctionIDInt = 0;
 			}
+			
+			
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
+				Statement st = con.createStatement();
+				String bidHistoryQuery = "SELECT * FROM bid WHERE auctionId = " + auctionIDInt;
+				ResultSet rs = st.executeQuery(bidHistoryQuery);
+				
+				while(rs.next()) {
+					
+					Bid bid = new Bid();
+					bid.setAuctionID(auctionIDInt);
+					bid.setCustomerID(rs.getString("customerID"));
+					bid.setBidTime(rs.getString("bidTime"));
+					bid.setBidPrice(rs.getFloat("bidPrice"));
+					bids.add(bid);
+				}
+				
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+			
+			
+			/*Sample data ends*/
+			
+			return bids;
 		}
-		
-		catch(Exception e) {
-			System.out.println(e);
-		}
-		
-		/*Sample data ends*/
-		
-		return bids;
-	}
-
 	public List<Bid> getAuctionHistory(String customerID) {
 		
 		List<Bid> bids = new ArrayList<Bid>();
@@ -59,11 +78,12 @@ public class BidDao {
 		 */
 
 		/*Sample data begins*/
+		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st = con.createStatement();
-			String bidhistoryQuery = ("SELECT * FROM bids WHERE customerid = " + customerID);
+			String bidhistoryQuery = ("SELECT * FROM bid WHERE customerid = '" + customerID + "'");
 			ResultSet rs = st.executeQuery(bidhistoryQuery);
 			while(rs.next()) {
 				Bid bid = new Bid();
@@ -84,7 +104,7 @@ public class BidDao {
 		
 		return bids;
 	}
-
+//
 	public Bid submitBid(String auctionID, String itemID, Float currentBid, Float maxBid, String customerID) {
 		
 		Bid bid = new Bid();
@@ -103,11 +123,11 @@ public class BidDao {
 		/*Sample data begins*/
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st = con.createStatement();
-			String addBidQuery = "INSERT INTO bid (customerid, auctionid, bidtime, bidprice, maximumbid,)\r\n"
+			String addBidQuery = "INSERT INTO bid (customerid, auctionid, bidtime, bidprice, maxbid,)\r\n"
 					+ "VALUES ( " + bid.getCustomerID() + ", " + bid.getAuctionID() + ", " + bid.getBidTime() + ", " + bid.getBidPrice() + ", " + bid.getMaxBid() +");";
-			ResultSet rs = st.executeQuery(addBidQuery);
+			int i = st.executeUpdate(addBidQuery);
 			String getBidItemQuery = "SELECT itemname FROM auction WHERE auctionid = " + auctionID;
 			bid.setAuctionID(Integer.valueOf(auctionID));
 			bid.setCustomerID(customerID);
@@ -124,50 +144,79 @@ public class BidDao {
 		
 		return bid;
 	}
-
-	public List<Bid> getSalesListing(String searchKeyword) {
+public List<Bid> getSalesListing(String searchKeyword) {
 		
 		List<Bid> bids = new ArrayList<Bid>();
-
-		/*
-		 * The students code to fetch data from the database
-		 * Each record is required to be encapsulated as a "Bid" class object and added to the "bids" ArrayList
-		 * searchKeyword, which is the search parameter, is given as method parameter
-		 * Query to  produce a list of sales by item name or by customer name must be implemented
-		 * The item name or the customer name can be searched with the provided searchKeyword
-		 */
-
-		/*Sample data begins*/
 		
+		String customerID = "";
+		int itemID = 0;
 		
-		try { //First we do a search for item if rs is null then return based on customer name
+		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
-			Statement st = con.createStatement(); //Bid does not have customer name so we have to grab the customer id first
-			String getCustomerIDforBidQuery = "select * from customer where Firstname like \'%" + searchKeyword + "%\'" + "or lastName like \'%" + searchKeyword + "%\'";
-			ResultSet r1 = st.executeQuery(getCustomerIDforBidQuery);
-			String custID = r1.getString("customerid"); //if its null it will just get by itemname
-			String 	getSalesListingQuery = "select * from bid where itemname like \'%" + searchKeyword + "%\'" + "or customerid like \'%" + custID + "%\'";
-			ResultSet r2 = st.executeQuery(getSalesListingQuery);
-			while(r2.next()) {
-				Bid bid = new Bid();
-				bid.setCustomerID(r2.getString("customerid"));
-				bid.setAuctionID(r2.getInt("auctionid"));
-				bid.setBidPrice(r2.getFloat("bidprice"));
-				bid.setMaxBid(r2.getFloat("maximumbid"));
-				bid.setBidTime(r2.getString("bidtime"));
-				bids.add(bid);
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
+			Statement st = con.createStatement();
+			
+			// QUERY TO GET CUSTOMER BY searchKeyword
+			String getCustomerQuery = "SELECT customerID FROM customer WHERE firstName = '" + searchKeyword + "' OR lastName = '" + searchKeyword + "'";
+			ResultSet rs = st.executeQuery(getCustomerQuery);
+			
+			
+			
+			
+			// IF searchKeyword is customer name
+			if(rs.next()) {
+				customerID = rs.getString("customerID");
+				
+				String soldBidCustomerQuery = "SELECT bid.*\r\n"
+						+ "FROM bid\r\n"
+						+ "INNER JOIN post on bid.auctionid = post.auctionid\r\n"
+						+ "WHERE post.customerid = '" +  customerID + "'\r\n"
+						+ "AND bid.sold = 1";
+				
+				rs = st.executeQuery(soldBidCustomerQuery);
+				while(rs.next()) {
+					
+					Bid bid = new Bid();
+					bid.setAuctionID(rs.getInt("auctionid"));
+					bid.setCustomerID(rs.getString("customerid"));
+					bid.setBidTime(rs.getString("bidtime"));
+					bid.setBidPrice(rs.getFloat("bidprice"));
+					bids.add(bid);
+				}
+				return bids;
+				
+			} 
+			
+			// QUERY TO GET ITEM NAME
+			String getItemQuery = "SELECT itemID FROM items WHERE name = '" + searchKeyword + "'";
+			ResultSet rs2 = st.executeQuery(getItemQuery);
+			if(rs2.next()) {
+				itemID = rs2.getInt("itemID");
+				
+				String soldBidItemQuery = "SELECT bid.*\r\n"
+						+ "FROM bid\r\n"
+						+ "INNER JOIN post on bid.auctionid = post.auctionid\r\n"
+						+ "INNER JOIN auction on bid.auctionid = auction.auction\r\n"
+						+ "WHERE auction.itemid = " + itemID + "\r\n"
+						+ "AND bid.sold = 1";
+				
+				rs2 = st.executeQuery(soldBidItemQuery);
+						while(rs2.next()) {
+							
+							Bid bid = new Bid();
+							bid.setAuctionID(rs2.getInt("auctionID"));
+							bid.setCustomerID(rs2.getString("customerID"));
+							bid.setBidTime(rs2.getString("bidTime"));
+							bid.setBidPrice(rs2.getFloat("bidPrice"));
+							bids.add(bid);
+						}
 			}
 			
 			
-		}
-	
-		catch(Exception e) {
+		} catch (Exception e) {
 			System.out.println(e);
 		}
-		/*Sample data ends*/
 		
 		return bids;
 	}
-
 }

@@ -33,9 +33,9 @@ public class CustomerDao {
 		/*Sample data begins*/
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("select * from customer where Firstname like \'%" + searchKeyword + "%\'" + "or lastName like \'%" + searchKeyword + "%\'");
+			ResultSet rs = st.executeQuery("select * from customer where firstname like \'%" + searchKeyword + "%\'" + "or lastName like \'%" + searchKeyword + "%\'");
 			while(rs.next()) {
 				Customer customer = new Customer();
 				customer.setCustomerID(rs.getString("customerid"));
@@ -67,47 +67,55 @@ public class CustomerDao {
 		 * The students code to fetch data from the database will be written here
 		 * The customer record is required to be encapsulated as a "Customer" class object
 		 */
-		
+
 
 		/*Sample data begins*/
 		Customer highRevCustomer = new Customer();
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement highRevstatement = con.createStatement();
 			
-			String highRevQuery = "SELECT rs.lastname\r\n"
-					+ "FROM (\r\n"
-					+ "        SELECT c.lastname as lastname, ROUND(SUM(b.maximum_bid), 2) AS revenue\r\n"
-					+ "        FROM bid b\r\n"
-					+ "                 LEFT JOIN customer c ON b.current_winner = c.ssn\r\n"
-					+ "        WHERE b.sold = TRUE\r\n"
-					+ "        GROUP BY c.lastname\r\n"
-					+ "        ORDER BY revenue DESC\r\n"
-					+ "        LIMIT 1\r\n"
-					+ "    ) rs;\r\n"
-					+ "";
+			String highRevQuery ="select CustomerID, sum(soldprice*copiesSold) as rev"
+					+ " from items it"
+					+ " inner join auction auc"
+					+ " on auc.itemid = it.itemID"
+					+ " inner join post p"
+					+ " on p.auctionid = auc.auctionid"
+					+ " Group by p.customerid"
+					+ " order by rev DESC"
+					+ " limit 1";
 			ResultSet rs = highRevstatement.executeQuery(highRevQuery);
+			String highcustomerid = "";
+			while(rs.next()) {
+				highcustomerid = rs.getString("customerid");
+			}
+			String findCustomer = "select * from customer c where c.customerid= '" + highcustomerid + "'"; 
+			ResultSet rss = highRevstatement.executeQuery(findCustomer);
+			while(rss.next()) {
+			
 				Customer customer = new Customer();
-				customer.setCustomerID(rs.getString("customerid"));
-				customer.setAddress(rs.getString("address"));
-				customer.setLastName(rs.getString("lastname"));
-				customer.setFirstName(rs.getString("firstname"));
-				customer.setCity(rs.getString("city"));
-				customer.setState(rs.getString("state"));
-				customer.setEmail(rs.getString("email"));
-				customer.setZipCode(rs.getInt("zipcode"));
-				customer.setTelephone(rs.getString("telephone"));
-				customer.setCreditCard(rs.getString("creditcard"));
-				customer.setRating(rs.getInt("rating"));
+				customer.setCustomerID(rss.getString("customerid"));
+				customer.setAddress(rss.getString("address"));
+				customer.setLastName(rss.getString("lastname"));
+				customer.setFirstName(rss.getString("firstname"));
+				customer.setCity(rss.getString("city"));
+				customer.setState(rss.getString("state"));
+				customer.setEmail(rss.getString("email"));
+				customer.setZipCode(rss.getInt("zipcode"));
+				customer.setTelephone(rss.getString("telephone"));
+				customer.setCreditCard(rss.getString("creditcard"));
+				customer.setRating(rss.getInt("rating"));
 				highRevCustomer = customer;
+		
+		}
 		}
 		catch(Exception e) {
 			System.out.println(e);
-		}
-
 		/*Sample data ends*/
 	
+		
+		}
 		return highRevCustomer;
 	}
 
@@ -125,13 +133,23 @@ public class CustomerDao {
 		/*Sample data begins*/
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement mailStatement = con.createStatement();
-			String mailListQuery = "SELECT customer.email FROM customer;";
+			String mailListQuery = "SELECT * FROM customer;";
 			ResultSet rs = mailStatement.executeQuery(mailListQuery);
 			while(rs.next()) {
 				Customer customer = new Customer();
-				customer.setEmail(rs.getString("email"));/*Might need to include names since its encapsulated as customer objects but who knows */
+				customer.setCustomerID(rs.getString("customerid"));
+				customer.setAddress(rs.getString("address"));
+				customer.setLastName(rs.getString("lastname"));
+				customer.setFirstName(rs.getString("firstname"));
+				customer.setCity(rs.getString("city"));
+				customer.setState(rs.getString("state"));
+				customer.setEmail(rs.getString("email"));
+				customer.setZipCode(rs.getInt("zipcode"));
+				customer.setTelephone(rs.getString("telephone"));
+				customer.setCreditCard(rs.getString("creditcard"));
+				customer.setRating(rs.getInt("rating"));
 				customers.add(customer);
 			}
 			}
@@ -156,9 +174,9 @@ public class CustomerDao {
 		Customer customer = new Customer();
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st = con.createStatement();
-			String query = "SELECT * FROM customer WHERE customerID = " + customerID + "";
+			String query = "SELECT * FROM customer WHERE customerID = '" + customerID + "'";
 			ResultSet rs = st.executeQuery(query);
 			Customer tempcustomer = new Customer();
 			customer.setCustomerID(rs.getString("customerid"));
@@ -195,9 +213,9 @@ public class CustomerDao {
 		try {
 			
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st = con.createStatement();
-			String delQuery = "DELETE from customer WHERE customerid = " + customerID + "";
+			String delQuery = "DELETE from customer WHERE customerid = '" + customerID + "'";
 			int deleted = st.executeUpdate(delQuery);
 			if(deleted == 0) {
 				queryResult = "failure";
@@ -228,9 +246,9 @@ public class CustomerDao {
 		try {
 
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st = con.createStatement();
-			String idQuery = "SELECT customerid FROM customer WHERE email =  " + username + "";
+			String idQuery = "SELECT customerid FROM customer WHERE email =  '" + username + "'";
 			ResultSet rs = st.executeQuery(idQuery);
 			String tempCustID = rs.getString("customerid");
 			custID = tempCustID;
@@ -257,15 +275,16 @@ public class CustomerDao {
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st1 = con.createStatement();
 			Statement st2 = con.createStatement();
 			String sellersIDQuery = "SELECT customerid FROM post"; // grab the IDs of the sellers from the post table
 			ResultSet rs1 = st1.executeQuery(sellersIDQuery); // table of customerids of sellers
 			while(rs1.next()) { //while that result set exists perform select statements to grab the details from customer table
 				Customer customer = new Customer();
-				String sellerInfoQuery = "SELECT * FROM customers WHERE customerid = " + rs1.getString("customerid") + "" ; 
+				String sellerInfoQuery = "SELECT * FROM customer WHERE customerid = '" + rs1.getString("customerid") + "'" ; 
 				ResultSet rs2 = st2.executeQuery(sellerInfoQuery);
+				while(rs2.next()) {
 				customer.setCustomerID(rs2.getString("customerid"));
 				customer.setAddress(rs2.getString("address"));
 				customer.setLastName(rs2.getString("lastname"));
@@ -278,9 +297,9 @@ public class CustomerDao {
 				customer.setCreditCard(rs2.getString("creditcard"));
 				customer.setRating(rs2.getInt("rating"));
 				customers.add(customer);
+				}
 			}
 		}
-		
 		catch(Exception e) {
 			System.out.println(e);
 		}
@@ -305,10 +324,11 @@ public class CustomerDao {
 		try {
 
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st = con.createStatement();
 			String addQuery = "INSERT INTO customer (customerid, lastname, firstname, address, city, state, zipcode, telephone, email, creditcard, rating)\r\n"
-					+ "VALUES ( " + customer.getCustomerID() + ", " + customer.getLastName() + ", " + customer.getFirstName() +  ", "+ customer.getAddress() + ", "+ customer.getCity() + ", " + customer.getState() + ", " + customer.getZipCode() + ", " + customer.getTelephone() + ", " + customer.getEmail() +", " + customer.getCreditCard() + ", " + customer.getRating() + ");";
+					+ "VALUES ( '" + customer.getCustomerID() + "', '" + customer.getLastName() + "', '" + customer.getFirstName() +  "', '"+ customer.getAddress() + "', '"+ customer.getCity() + "', '" + customer.getState() + "', '" + customer.getZipCode() + "', '" + customer.getTelephone() + "', '" + customer.getEmail() +"', '" + customer.getCreditCard() + "', '" + customer.getRating() + "');";
+			System.out.println(addQuery);
 			int inserted = st.executeUpdate(addQuery);
 			if(inserted == 0) {
 				queryResult = "failure";
@@ -322,6 +342,7 @@ public class CustomerDao {
 			System.out.println(e);
 		}
 		
+		System.out.println(queryResult);
 		
 		/*Sample data begins*/
 		return queryResult;
@@ -340,11 +361,11 @@ public class CustomerDao {
 		String queryResult = "";
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st = con.createStatement();
-			String editQuery = "UPDATE customer SET lastname = " + customer.getLastName() + ", firstname = " + customer.getFirstName() + ", lastname = " + customer.getLastName() + ", address = " + customer.getAddress() + ", city = " + customer.getCity() + ", state = " + customer.getState() + ", zipcode = " + customer.getZipCode() + ", telephone = " + customer.getTelephone() + ", email = " + customer.getEmail() + ", creditcard = " + customer.getCreditCard() + ", rating = " + customer.getRating() + "WHERE customerid = " + customer.getCustomerID();
+			String editQuery = "UPDATE customer SET lastname = '" + customer.getLastName() + "', firstname = '" + customer.getFirstName() + "', lastname = '" + customer.getLastName() + "', address = '" + customer.getAddress() + "', city = '" + customer.getCity() + "', state = '" + customer.getState() + "', zipcode = '" + customer.getZipCode() + "', telephone = '" + customer.getTelephone() + "', email = '" + customer.getEmail() + "', creditcard = '" + customer.getCreditCard() + "', rating = '" + customer.getRating() + "'WHERE customerid = '" + customer.getCustomerID() + "'";
 			int editUpdate = st.executeUpdate(editQuery); //Returns rows changed and executes the update
-			
+			System.out.println("editQuery");
 			if(editUpdate == 0) {  //If not updated then failure
 				queryResult = "failure";
 			}
@@ -353,12 +374,13 @@ public class CustomerDao {
 				queryResult = "success";
 			}
 		}
-		
+
 		
 		catch(Exception e) {
 			System.out.println(e);
 		}
 		
+		System.out.println(queryResult);
 		
 		/*Sample data begins*/
 		return queryResult;

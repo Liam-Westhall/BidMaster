@@ -23,6 +23,67 @@
 	<link href="webjars/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" />
 	<title>Customer Details</title>
 </head>
+
+	<style>
+	
+	h1 {
+		margin: 1em 0 0.5em 0;
+	font-weight: 600;
+	font-family: 'Titillium Web', sans-serif;
+	position: relative;  
+	font-size: 36px;
+	line-height: 40px;
+	padding: 15px 15px 15px 15%;
+	color: #355681;
+	box-shadow: 
+		inset 0 0 0 1px rgba(53,86,129, 0.4), 
+		inset 0 0 5px rgba(53,86,129, 0.5),
+		inset -285px 0 35px white;
+	border-radius: 0 10px 0 10px;
+	text-align: center;
+	left: -45px
+	}
+	
+		
+	input[type = "submit"]{
+	background: rgb(105,105,105);
+	border: 1px solid black;
+	}
+	
+	button[type = "submit"]{
+	background: rgb(105,105,105);
+	border: 1px solid black;
+	}
+	
+	
+	h3{
+	margin: 1em 0 0.5em 0;
+	font-weight: normal;
+	position: relative;
+	text-shadow: 0 -1px rgba(0,0,0,0.6);
+	font-size: 28px;
+	line-height: 40px;
+	background: #355681;
+	background: rgba(53,86,129, 0.8);
+	border: 2px solid black;
+	padding: 5px 15px;
+	color: white;
+	border-radius: 0 10px 0 10px;
+	box-shadow: inset 0 0 5px rgba(53,86,129, 0.5);
+	font-family: 'Muli', sans-serif;
+	}
+	
+	table{
+	border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 1.0em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+	}
+	
+	}
+	</style>
 <body>
 	<div>
 	<h1>The Customer Details are:</h1>

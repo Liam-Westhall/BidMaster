@@ -28,12 +28,13 @@ public class EmployeeDao {
 		
 		String queryResult = "";
 		try {
-
+			String defaultEmployeeLevel = "customerRepresentative";
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st = con.createStatement();
-			String addQuery = "INSERT INTO customer (employeeid, lastname, firstname, address, city, state, zipcode, telephone, email, startdate, hourlyrate, level)\r\n"   //level is the type of employee manager cust rep etc.
-					+ "VALUES ( " + employee.getEmployeeID() + "," + employee.getLastName() + "," + employee.getFirstName() + ", "+ employee.getAddress() + ", " + employee.getCity() + ", " + employee.getState() + ", " + employee.getZipCode() + ", " + employee.getTelephone() + ", " + employee.getEmail() +", " + employee.getStartDate() + ", " + employee.getHourlyRate() + ", " + employee.getLevel() + ");";
+			String addQuery = "INSERT INTO employee (ssn, lastname, firstname, address, city, state, zipcode, telephone, email, startdate, hourlyrate, level)\r\n"   //level is the type of employee manager cust rep etc.
+					+ "VALUES ( '" + employee.getEmployeeID() + "','" + employee.getLastName() + "','" + employee.getFirstName() + "','"+ employee.getAddress() + "','" + employee.getCity() + "', '" + employee.getState() + "', '" + employee.getZipCode() + "', '" + employee.getTelephone() + "', '" + employee.getEmail() +"', '" + employee.getStartDate() + "', '" + employee.getHourlyRate() + "','" + defaultEmployeeLevel + "');";
+			System.out.println(addQuery);
 			int inserted = st.executeUpdate(addQuery);
 			if(inserted == 0) {
 				queryResult = "failure";
@@ -67,7 +68,7 @@ public class EmployeeDao {
 		String queryResult = "";
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st = con.createStatement();
 			String editEmployeeQuery = "UPDATE employee SET lastname = " + employee.getLastName() + ", firstname = " + employee.getFirstName() + ", address = " + employee.getAddress() + ", city = " + employee.getCity() + ", state = " + employee.getState() + ", zipcode = " + employee.getZipCode() + ", telephone = " + employee.getTelephone() + ", email =" + employee.getEmail() + ", startdate = " + employee.getStartDate() + ", hourlyrate = " + employee.getHourlyRate() + ", level = " + employee.getLevel() + " WHERE employeeid = " + employee.getEmployeeID();
 			int editUpdate = st.executeUpdate(editEmployeeQuery);
@@ -105,9 +106,9 @@ public class EmployeeDao {
 		try {
 			
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st = con.createStatement();
-			String delQuery = "DELETE from customer WHERE employeeid = " + employeeID;
+			String delQuery = "DELETE from employee WHERE ssn = '" + employeeID + "'";
 			int deleted = st.executeUpdate(delQuery);
 			if(deleted == 0) { //If 0 rows deleted then failure else success
 				queryResult = "failure";
@@ -141,12 +142,12 @@ public class EmployeeDao {
 		/*Sample data begins*/
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("select * from employee");
+			ResultSet rs = st.executeQuery("SELECT * FROM employee");
 			while(rs.next()) {
 				Employee employee = new Employee();
-				employee.setEmployeeID(rs.getString("employeeid"));
+				employee.setEmployeeID(rs.getString("ssn"));
 				employee.setAddress(rs.getString("address"));
 				employee.setLastName(rs.getString("lastname"));
 				employee.setFirstName(rs.getString("firstname"));
@@ -183,11 +184,11 @@ public class EmployeeDao {
 		try {
 
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st = con.createStatement();
-			String getemployQuery = "SELECT * FROM employee WHERE employeeid = " + employeeID;
+			String getemployQuery = "SELECT * FROM employee WHERE ssn = '" + employeeID + "'";
 			ResultSet rs = st.executeQuery(getemployQuery);
-			employee.setEmployeeID(rs.getString("employeeid")); //change ssn in tables to employeeid
+			employee.setEmployeeID(rs.getString("ssn")); //change ssn in tables to employeeid
 			employee.setAddress(rs.getString("address"));
 			employee.setLastName(rs.getString("lastname"));
 			employee.setFirstName(rs.getString("firstname"));
@@ -209,8 +210,8 @@ public class EmployeeDao {
 		
 		return employee;
 	}
-	
-	public Employee getHighestRevenueEmployee() {
+
+public Employee getHighestRevenueEmployee() {
 		
 		/*
 		 * The students code to fetch employee data who generated the highest revenue will be written here
@@ -222,47 +223,48 @@ public class EmployeeDao {
 		/*Sample data begins*/
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
-			Statement st = con.createStatement();
-			String getemployHighRevQuery = "SELECT rs.lastname\r\n"
-					+ "FROM (\r\n"
-					+ "        SELECT e.employeeid as employeeid, ROUND(SUM(b.maximum_bid), 2) AS revenue\r\n"
-					+ "        FROM bid b\r\n"
-					+ "                 LEFT JOIN employee e ON b.monitor = e.employeeid\r\n"
-					+ "        WHERE b.sold = TRUE\r\n"
-					+ "        GROUP BY e.lastname\r\n"     //Modified original query where it was customer instead by accident
-					+ "        ORDER BY revenue DESC\r\n"   //Probably wrong query needs to be fixed
-					+ "        LIMIT 1\r\n"
-					+ "    ) rs;\r\n";
-		  ResultSet r1 = st.executeQuery(getemployHighRevQuery);
-		  String highRevemployee = r1.getString("employee"); 
-		  String getEmployeedataQuery = "SELECT * FROM employee WHERE employeeid = " + highRevemployee;
-		  ResultSet r2 = st.executeQuery(getEmployeedataQuery);
-		  while(r2.next()) {
-			  employee.setEmployeeID(r2.getString("ssn"));
-				employee.setAddress(r2.getString("address"));
-				employee.setLastName(r2.getString("lastname"));
-				employee.setFirstName(r2.getString("firstname"));
-				employee.setCity(r2.getString("city"));
-				employee.setState(r2.getString("state"));
-				employee.setEmail(r2.getString("email"));
-				employee.setZipCode(r2.getInt("zipcode"));
-				employee.setTelephone(r2.getString("telephone"));
-				employee.setStartDate(r2.getString("startdate"));
-				employee.setHourlyRate(r2.getInt("hourlyrate"));
-				employee.setLevel(r2.getString("level"));
-		  }
-		  
-		  
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
+			Statement highRevstatement = con.createStatement();
+			
+			String highRevQuery ="select auc.employeeid, sum(soldprice*copiessold) as rev"
+					+ " from items it"
+					+ " inner join auction auc"
+					+ " on auc.itemid = it.itemID"
+					+ " inner join post p"
+					+ " on p.auctionid = auc.auctionid"
+					+ " Group by auc.employeeid"
+					+ " order by rev DESC"
+					+ " limit 1";
+			ResultSet rs = highRevstatement.executeQuery(highRevQuery);
+			String highemployeeid = "";
+			while(rs.next()) {
+				highemployeeid = rs.getString("employeeID");
+			}
+			System.out.println(highemployeeid);
+			String findEmployee = "select * from employee e where e.ssn= '" + highemployeeid + "'"; 
+			ResultSet rss = highRevstatement.executeQuery(findEmployee);
+			while(rss.next()) {
+				employee.setEmployeeID(rss.getString("ssn"));
+				employee.setAddress(rss.getString("address"));
+				employee.setLastName(rss.getString("lastname"));
+				employee.setFirstName(rss.getString("firstname"));
+				employee.setCity(rss.getString("city"));
+				employee.setState(rss.getString("state"));
+				employee.setEmail(rss.getString("email"));
+				employee.setZipCode(rss.getInt("zipcode"));
+				employee.setTelephone(rss.getString("telephone"));
+				employee.setStartDate(rss.getString("startdate"));
+				employee.setHourlyRate(rss.getInt("hourlyrate"));
+				employee.setLevel(rss.getString("level"));
+		}
 		}
 		catch(Exception e) {
 			System.out.println(e);
 		}
+		return employee;
+		}
 		/*Sample data ends*/
 		
-		return employee;
-	}
-
 	public String getEmployeeID(String username) {
 		/*
 		 * The students code to fetch data from the database based on "username" will be written here
@@ -274,9 +276,9 @@ public class EmployeeDao {
 		try {
 
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "root", "Videogames123456789!");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/auction", "root", "Videogames123456789!");
 			Statement st = con.createStatement();
-			String idQuery = "SELECT employeeid FROM employee WHERE email =  " + username + "";
+			String idQuery = "SELECT employeeid FROM employee WHERE email =  '" + username + "'";
 			ResultSet rs = st.executeQuery(idQuery);
 			String tempemployID = rs.getString("customerid");
 			employID = tempemployID;

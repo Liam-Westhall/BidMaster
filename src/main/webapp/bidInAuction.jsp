@@ -21,6 +21,28 @@
 	<meta name="viewport" content="width:device-width, initial-scale=1">
 	<link href="webjars/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" />
 	<title>Auction Details</title>
+	<style>
+	
+	h1 {
+		margin: 1em 0 0.5em 0;
+	font-weight: 600;
+	font-family: 'Titillium Web', sans-serif;
+	position: relative;  
+	font-size: 36px;
+	line-height: 40px;
+	padding: 15px 15px 15px 15%;
+	color: #355681;
+	box-shadow: 
+		inset 0 0 0 1px rgba(53,86,129, 0.4), 
+		inset 0 0 5px rgba(53,86,129, 0.5),
+		inset -285px 0 35px white;
+	border-radius: 0 10px 0 10px;
+	text-align: center;
+	left: -45px
+	}
+	
+	
+	</style>
 </head>
 <body>
 

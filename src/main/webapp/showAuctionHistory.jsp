@@ -21,10 +21,58 @@
 	<meta name="viewport" content="width:device-width, initial-scale=1">
 	<link href="webjars/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" />
 	<title>Auction History</title>
+	
+		
+			<style>
+	
+	h1{
+		margin: 1em 0 0.5em 0;
+	font-weight: 600;
+	font-family: 'Titillium Web', sans-serif;
+	position: relative;  
+	font-size: 36px;
+	line-height: 40px;
+	padding: 15px 15px 15px 15%;
+	color: #355681;
+	box-shadow: 
+		inset 0 0 0 1px rgba(53,86,129, 0.4), 
+		inset 0 0 5px rgba(53,86,129, 0.5),
+		inset -285px 0 35px white;
+	border-radius: 0 10px 0 10px;
+	text-align: center;
+	left: -45px
+	}
+	
+	
+	h3{
+	
+	margin: 1em 0 0.5em 0;
+	font-weight: 600;
+	font-family: 'Titillium Web', sans-serif;
+	position: relative;
+	font-size: 30px;
+	line-height: 20px;
+	color: #000000;
+	font-family: 'Muli', sans-serif;
+	
+	}
+	
+	table{
+	border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 1.0em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+	}
+	
+	</style>
+	
+	
 </head>
 <body>
 
-	<h1>The Auction History is:</h1>
+	<h1>Your Auction History is:</h1>
 	<div class="container">
 	<c:if test="${empty bids}">
 		<h3> Auction History not found! <h3/> 
